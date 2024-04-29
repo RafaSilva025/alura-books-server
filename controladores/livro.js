@@ -2,6 +2,8 @@ const { getTodosLivros, getLivrosPorID, insereLivro, modificaLivro } = require("
 
 function getLivros( req, res) {
     try {
+        const id = req.params.id
+
         const livros = getTodosLivros()
         res.send(livros)
     } catch (error) {
@@ -12,9 +14,16 @@ function getLivros( req, res) {
 
 function getLivro( req, res) {
     try {
-        req.params.id
-        const livros = getLivrosPorID(id)
+        const id = req.params.id
+
+        if(id && Number(id)) {
+            const livro = getLivrosPorID(id)
         res.send(livro)
+        } else {
+            res.status(422)
+            res.send("ID inválido")
+        }
+
     } catch (error) {
         res.status(500)
         res.send(error.message)
@@ -33,29 +42,43 @@ function postLivro ( req, res) {
     }
 }
 
-function patchLivro ( req, res) {
+function patchLivro(req, res) {
     try {
         const id = req.params.id
-        const body = req.body
-        res.send("Item modificado com sucesso")
 
-        modificaLivro(body, id)
+        if(id && Number(id)) {
+            const body = req.body
+            modificaLivro(body, id)
+            res.send("Item modificado com sucesso")
+        } else {
+            res.status(422)
+            res.send("Id inválido")
+        }
+
     } catch(error) {
         res.status(500)
-        res.send(error.message)
+        res.send(error.message) 
     }
 }
 
-function deleteLivro ( req, res) {
+
+function deleteLivro(req, res) {
     try {
         const id = req.params.id
-        deletaLivroPorId(id)
-        res.send("livro deletado com sucesso")
-    } catch(error) {
+
+        if(id && Number(id)) {
+            deletaLivroPorId(id)
+            res.send("livro deletado com sucesso")
+        } else {
+            res.status(422)
+            res.send("ID inválido")
+        }
+    } catch (error) {
         res.status(500)
         res.send(error.message)
-    }
+    } 
 }
+
 
 module.exports = {
     getLivros, 
